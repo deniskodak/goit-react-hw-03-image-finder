@@ -1,27 +1,92 @@
 import React, { Component } from "react";
 
+import ApiService from "./components/ApiService";
 import Searchbar from "./components/Searchbar";
-const API_KEY = "21310703-eb2542faa873a37e647429bbc";
+import ImageGallery from "./components/ImageGallery";
+import ButtonLoadMore from "./components/Button";
+import ContainerWithLoader from "./components/Loader";
+import Modal from "./components/Modal";
+
+import { GlobalStyles, Section } from "./styled";
+
 class App extends Component {
   state = {
-    keyword: " ",
-    BASE_URL: `https://pixabay.com/api/?q=${this.state.keyword}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`,
+    imagesData: [],
+    loading: false,
+    error: null,
+    searchQuery: "",
+    page: 1,
+    isModal: true,
   };
 
-  componentDidMount() {
-    if (this.state.keyword) {
-      fetch(this.state.BASE_URL)
-        .then((respose) => respose.json())
-        .then((data) => console.log(data));
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.searchQuery !== this.state.searchQuery) {
+      this.getImages();
     }
+
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
   }
+
+  getImages = async () => {
+    const { searchQuery, page } = this.state;
+    this.setState({ loading: true });
+
+    try {
+      const { hits } = await ApiService(searchQuery, page);
+      this.setState(({ imagesData, page }) => ({
+        imagesData: [...imagesData, ...hits],
+        page: page + 1,
+      }));
+    } catch (error) {
+      console.dir(error.message);
+      this.setState({ error: error.message });
+    } finally {
+      this.setState({ loading: false });
+    }
+  };
 
   handleSubmit = (keyword) => {
-    this.state({ keyword: keyword });
+    this.setState({
+      searchQuery: keyword,
+      page: 1,
+      imagesData: [],
+      error: null,
+    });
+  };
+
+  onClick = () => {
+    this.getImages();
+  };
+
+  toggleModal = () => {
+    this.setState(({ isModal }) => ({ isModal: !isModal }));
+  };
+
+  onClickImg = (e) => {
+    console.log(e.target);
   };
   render() {
-    return <Searchbar onSubmit={this.handleSubmit} />;
+    const { imagesData, loading, error, isModal } = this.state;
+    const shouldRenderLoadMoreBtn = imagesData.length > 0 && !loading;
+
+    return (
+      <>
+        <GlobalStyles />
+        {isModal && <Modal onClose={this.toggleModal} />}
+        <Section>
+          <Searchbar onSubmit={this.handleSubmit} />
+          {error && <h2>{error}</h2>}
+          <ImageGallery images={imagesData} onClick={this.onClickImg} />
+          {loading && <ContainerWithLoader />}
+          {shouldRenderLoadMoreBtn && (
+            <ButtonLoadMore onIncrement={this.onClick} />
+          )}
+        </Section>
+      </>
+    );
   }
 }
-
 export default App;

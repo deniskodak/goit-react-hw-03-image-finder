@@ -1,10 +1,12 @@
-import React from 'react';
+import React from "react";
+import { Li, Img } from "./styled";
 
-const ImageGalleryItem = () => {
+const ImageGalleryItem = ({ src, largeImg }) => {
+  return (
+    <Li>
+      <Img src={src} alt="" data-src={largeImg} />
+    </Li>
+  );
+};
 
-   return ( 
-    <li className="ImageGalleryItem">
-        <img src="" alt="" className="ImageGalleryItem-image" />
-    </li>
-)
-}
+export default ImageGalleryItem;
