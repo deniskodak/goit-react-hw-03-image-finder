@@ -1,10 +1,10 @@
 import React from "react";
 import { Li, Img } from "./styled";
 
-const ImageGalleryItem = ({ src, largeImg }) => {
+const ImageGalleryItem = ({ src, largeImg, getLargeImg }) => {
   return (
     <Li>
-      <Img src={src} alt="" data-src={largeImg} />
+      <Img src={src} alt="" data-src={largeImg} onClick={getLargeImg} />
     </Li>
   );
 };

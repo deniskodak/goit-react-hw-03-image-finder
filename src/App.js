@@ -16,18 +16,17 @@ class App extends Component {
     error: null,
     searchQuery: "",
     page: 1,
-    isModal: true,
+    isModal: false,
+    largeImg: "",
   };
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.searchQuery !== this.state.searchQuery) {
       this.getImages();
     }
-
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: "smooth",
-    });
+    if (prevState.imagesData.length > 12 && !this.state.largeImg) {
+      this.toSctroll();
+    }
   }
 
   getImages = async () => {
@@ -41,7 +40,6 @@ class App extends Component {
         page: page + 1,
       }));
     } catch (error) {
-      console.dir(error.message);
       this.setState({ error: error.message });
     } finally {
       this.setState({ loading: false });
@@ -61,25 +59,41 @@ class App extends Component {
     this.getImages();
   };
 
-  toggleModal = () => {
-    this.setState(({ isModal }) => ({ isModal: !isModal }));
+  toSctroll = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
   };
 
-  onClickImg = (e) => {
-    console.log(e.target);
+  toggleModal = (check) => {
+    check
+      ? this.setState((prevState) => ({
+          isModal: !prevState.isModal,
+        }))
+      : this.setState((prevState) => ({
+          isModal: !prevState.isModal,
+          largeImg: "",
+        }));
   };
+
+  getLargeImage = (e) => {
+    this.setState({ largeImg: e.target.dataset.src });
+
+    this.toggleModal("check");
+  };
+
   render() {
-    const { imagesData, loading, error, isModal } = this.state;
+    const { imagesData, loading, error, isModal, largeImg } = this.state;
     const shouldRenderLoadMoreBtn = imagesData.length > 0 && !loading;
-
     return (
       <>
         <GlobalStyles />
-        {isModal && <Modal onClose={this.toggleModal} />}
+        {isModal && <Modal onClose={this.toggleModal} largeImg={largeImg} />}
         <Section>
           <Searchbar onSubmit={this.handleSubmit} />
           {error && <h2>{error}</h2>}
-          <ImageGallery images={imagesData} onClick={this.onClickImg} />
+          <ImageGallery images={imagesData} getLargeImg={this.getLargeImage} />
           {loading && <ContainerWithLoader />}
           {shouldRenderLoadMoreBtn && (
             <ButtonLoadMore onIncrement={this.onClick} />

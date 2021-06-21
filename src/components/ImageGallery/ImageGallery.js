@@ -2,10 +2,15 @@ import React from "react";
 import ImageGalleryItem from "../ImageGalleryItem";
 import { Ul } from "./styled";
 
-const ImageGallery = ({ images }) => (
+const ImageGallery = ({ images, getLargeImg }) => (
   <Ul>
     {images.map(({ id, webformatURL, largeImageURL }) => (
-      <ImageGalleryItem key={id} src={webformatURL} largeImg={largeImageURL} />
+      <ImageGalleryItem
+        key={id}
+        src={webformatURL}
+        largeImg={largeImageURL}
+        getLargeImg={getLargeImg}
+      />
     ))}
   </Ul>
 );

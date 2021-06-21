@@ -29,7 +29,7 @@ class Modal extends Component {
     return createPortal(
       <OverlayDiv className="Overlay" onClick={this.closeModalWindow}>
         <ModalDiv className="Modal">
-          <img src="" alt="" />
+          <img src={this.props.largeImg} alt="" />
         </ModalDiv>
       </OverlayDiv>,
       modalRoot
