@@ -25,7 +25,6 @@ class App extends Component {
       this.getImages();
     }
     if (prevState.imagesData.length > 12 && !this.state.largeImg) {
-      this.toSctroll();
     }
   }
 
@@ -35,10 +34,14 @@ class App extends Component {
 
     try {
       const { hits } = await ApiService(searchQuery, page);
-      this.setState(({ imagesData, page }) => ({
+      await this.setState(({ imagesData, page }) => ({
         imagesData: [...imagesData, ...hits],
         page: page + 1,
       }));
+
+      if (page > 1) {
+        this.toSctroll();
+      }
     } catch (error) {
       this.setState({ error: error.message });
     } finally {

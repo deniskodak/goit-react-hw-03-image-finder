@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+
 import ImageGalleryItem from "../ImageGalleryItem";
 import { Ul } from "./styled";
 
@@ -14,5 +16,10 @@ const ImageGallery = ({ images, getLargeImg }) => (
     ))}
   </Ul>
 );
+
+ImageGallery.propTypes = {
+  images: PropTypes.array.isRequired,
+  getLargeImg: PropTypes.func.isRequired,
+};
 
 export default ImageGallery;

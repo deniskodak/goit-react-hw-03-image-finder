@@ -1,6 +1,6 @@
-// import { render } from "@testing-library/react";
-// import * as basicLightbox from "basiclightbox";
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+
 import { createPortal } from "react-dom";
 import { OverlayDiv, ModalDiv } from "./styled";
 
@@ -36,4 +36,9 @@ class Modal extends Component {
     );
   }
 }
+
+Modal.propTypes = {
+  largeImg: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+};
 export default Modal;

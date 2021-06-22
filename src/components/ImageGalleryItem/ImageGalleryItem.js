@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Li, Img } from "./styled";
 
 const ImageGalleryItem = ({ src, largeImg, getLargeImg }) => {
@@ -9,4 +10,8 @@ const ImageGalleryItem = ({ src, largeImg, getLargeImg }) => {
   );
 };
 
+ImageGalleryItem.propTypes = {
+  src: PropTypes.string.isRequired,
+  largeImg: PropTypes.string.isRequired,
+};
 export default ImageGalleryItem;
